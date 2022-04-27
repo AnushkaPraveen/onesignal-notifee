@@ -1,22 +1,16 @@
-
-
 import React,{useEffect}  from 'react';
-
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
   Button,
   StyleSheet,
   Text,
-  useColorScheme,
   View,
 } from 'react-native';
 import OneSignal from 'react-native-onesignal';
 import notifee from '@notifee/react-native';
+import NotificationHandler from './app/notification';
 
 
-
+let notificationHandler=new NotificationHandler();
 
 
 const App= () => {
@@ -39,8 +33,6 @@ const App= () => {
           id: 'default',
           name: 'Default Channel',
         });
-    
-     
        await notifee.displayNotification({
          
           title: 'Notification Title',
@@ -52,12 +44,30 @@ const App= () => {
           
         });
       }
+ 
+
+const displayNotification=()=>{
+const payload={
+  channelId:'default',
+  name:'default',
+  notificationId:'default',
+  title:'Notifee Notification',
+  body:'This is Notifee notification'
+}
+notificationHandler.getNotification(payload)
+} 
+
 
 
   return (
-   <View>
+   <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
    <Text>Hello</Text>
+   <View>
    <Button title="Display Notification" onPress={onDisplayNotification} />
+   </View> 
+   <View style={{marginTop:10}}>
+   <Button title="Display Notifee Notification" onPress={displayNotification} />
+   </View>
    </View>
   );
 };

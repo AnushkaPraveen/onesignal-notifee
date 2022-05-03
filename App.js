@@ -1,4 +1,4 @@
-import React,{useEffect}  from 'react';
+import React, { useEffect } from 'react';
 import {
   Button,
   StyleSheet,
@@ -9,66 +9,67 @@ import OneSignal from 'react-native-onesignal';
 import notifee from '@notifee/react-native';
 import NotificationHandler from './app/notification';
 
+let notificationHandler = new NotificationHandler();
 
-let notificationHandler=new NotificationHandler();
-
-
-const App= () => {
- 
-  useEffect(()=>{
+const App = () => {
+  useEffect(() => {
     //OneSignal Init Code
     OneSignal.setLogLevel(6, 0);
     OneSignal.setAppId("a6dbd8e6-08f6-405c-8823-2a7a8517e966");
-    //END OneSignal Init Code
-    
-    
+    //Method for handling notifications received while app in foreground
+    OneSignal.setNotificationWillShowInForegroundHandler(notificationReceivedEvent => {
+      /*  console.log("OneSignal: notification will show in foreground:", notificationReceivedEvent); */
+      let notification = notificationReceivedEvent.getNotification();
+      /* console.log("notification: ", notification);
+      displayNotification(notification) */
+      /* const data = notification.additionalData
+      console.log("additionalData: ", data); */
+      // Complete with null means don't show a notification.
+      notificationReceivedEvent.complete(notification);
+    });
+
     //Method for handling notifications opened
     OneSignal.setNotificationOpenedHandler(notification => {
       console.log("OneSignal: notification opened:", notification);
     });
-      },[])
+  }, [])
 
-      const onDisplayNotification=async()=>{
-        const channelId = await notifee.createChannel({
-          id: 'default',
-          name: 'Default Channel',
-        });
-       await notifee.displayNotification({
-         
-          title: 'Notification Title',
-          body: 'Main body content of the notification',
-          android: {
-            channelId,
-            smallIcon: 'ic_launcher', 
-        },
-          
-        });
-      }
- 
+  const onDisplayNotification = async () => {
+    const channelId = await notifee.createChannel({
+      id: 'default',
+      name: 'Default Channel',
+    });
+    await notifee.displayNotification({
+      title: 'Notification Title',
+      body: 'Main body content of the notification',
+      android: {
+        channelId,
+        smallIcon: 'ic_launcher',
+      },
+    });
+  }
 
-const displayNotification=()=>{
-const payload={
-  channelId:'default',
-  name:'default',
-  notificationId:'default',
-  title:'Notifee Notification',
-  body:'This is Notifee notification'
-}
-notificationHandler.getNotification(payload)
-} 
-
-
+  const displayNotification = (notification) => {
+    const payload = {
+      channelId: 'default',
+      name: 'default',
+      notificationId: 'default',
+      title: notification.title,
+      body: notification.body
+    }
+    notificationHandler.getNotification(payload)
+  }
 
   return (
-   <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
-   <Text>Hello</Text>
-   <View>
-   <Button title="Display Notification" onPress={onDisplayNotification} />
-   </View> 
-   <View style={{marginTop:10}}>
-   <Button title="Display Notifee Notification" onPress={displayNotification} />
-   </View>
-   </View>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Hello</Text>
+      <View>
+        <Button title="Display Notification" onPress={onDisplayNotification} />
+      </View>
+      <View style={{ marginTop: 10 }}>
+        <Button title="Display Notifee Notification" onPress={displayNotification} />
+      </View>
+    </View>
   );
 };
 

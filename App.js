@@ -1,6 +1,6 @@
 
 
-import React,{useEffect}  from 'react';
+import React, { useEffect } from 'react';
 
 import {
   SafeAreaView,
@@ -19,46 +19,40 @@ import notifee from '@notifee/react-native';
 
 
 
-const App= () => {
- 
-  useEffect(()=>{
+const App = () => {
+
+  useEffect(() => {
     //OneSignal Init Code
     OneSignal.setLogLevel(6, 0);
     OneSignal.setAppId("a6dbd8e6-08f6-405c-8823-2a7a8517e966");
-    //END OneSignal Init Code
-    
-    
+
     //Method for handling notifications opened
     OneSignal.setNotificationOpenedHandler(notification => {
       console.log("OneSignal: notification opened:", notification);
     });
-      },[])
+  }, [])
 
-      const onDisplayNotification=async()=>{
-        const channelId = await notifee.createChannel({
-          id: 'default',
-          name: 'Default Channel',
-        });
-    
-     
-       await notifee.displayNotification({
-         
-          title: 'Notification Title',
-          body: 'Main body content of the notification',
-          android: {
-            channelId,
-            smallIcon: 'ic_launcher', 
-        },
-          
-        });
-      }
+  const onDisplayNotification = async () => {
+    const channelId = await notifee.createChannel({
+      id: 'default',
+      name: 'Default Channel',
+    });
 
-
+    await notifee.displayNotification({
+      title: 'Notification Title',
+      body: 'Main body content of the notification',
+      android: {
+        channelId,
+        smallIcon: 'ic_launcher',
+      },
+    });
+  }
+  
   return (
-   <View>
-   <Text>Hello</Text>
-   <Button title="Display Notification" onPress={onDisplayNotification} />
-   </View>
+    <View>
+      <Text>Hello</Text>
+      <Button title="Display Notification" onPress={onDisplayNotification} />
+    </View>
   );
 };
 
